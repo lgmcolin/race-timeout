@@ -1,11 +1,12 @@
 var timeout = require('..');
+var Promise = require('native-or-bluebird');
 
 function promiseA() {
   return new Promise(function (resolve) {
     setTimeout(function(){
       console.log('promiseA');
       resolve('1');
-    },100);
+    },200);
   })
 }
 
@@ -14,23 +15,39 @@ function promiseB() {
     setTimeout(function(){
       console.log('promiseB');
       resolve('2');
-    }, 200)
+    }, 100)
   })
 }
 
-var test1 = timeout(promiseA(), 1000).then(function(result){
-  console.log('result=', result);
-});
-console.log('test1', test1);
+describe("Promise.race", function(){
+  
+  it("return promiseA", function() {
+      var p = timeout(promiseA(), 10000);
+      p.then(function(v) {
+          assert.equal(v, 1);
+      });
+  });
 
+  it("return timeout", function() {
+      var p = timeout(promiseA(), 10000);
+      p.then(function(v) {
+          assert.equal(v, "timeout");
+      });
+  });
 
-var test2 = timeout([promiseA(), promiseB()], 1000).then(function(result){
-  console.log('result=', result);
-});
-console.log('test2', test2);
+  it("without param timeout", function() {
+      var p = timeout(promiseA());
+      p.then(function(v) {
+          assert.equal(v, "1");
+      });
+  });
 
-var test3 = timeout([promiseA(), promiseB()], 1000).then(function(result){
-  console.log('result=', result);
-});
+  it("with multi tasks", function() {
 
-console.log('test3', test3);
+      var p = timeout([promiseA(),promiseB()]);
+      p.then(function(v) {
+          assert.equal(v, "2");
+      });
+  });
+
+})
