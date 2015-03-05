@@ -5,7 +5,7 @@ returns a promise that resolves or rejects as soon as one of the promises in the
 
 race-timeout is similar with [timeout-then](https://github.com/thenables/timeout-then), but race-timeout will return the firse-exec promise task between some promise tasks and the timeout promise.
 
-＃Installation
+# Installation
 ---
 npm install race-timeout
 
